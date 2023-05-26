@@ -6,7 +6,10 @@ extension = "xlsx"
 
 def loadWorkbook(excelSheetName,data):
     df = pd.read_excel(excelSheetName)
+    df = df.dropna()
     df.to_dict(orient='records')
+    
+
 
     for col in df.columns:
         df.rename(columns={col:col.replace("/"," ").replace(" ","_")},inplace=True)
