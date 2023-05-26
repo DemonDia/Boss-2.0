@@ -6,10 +6,14 @@ extension = "xlsx"
 
 def loadWorkbook(excelSheetName,data):
     df = pd.read_excel(excelSheetName)
+    df.to_dict(orient='records')
+
     for col in df.columns:
         df.rename(columns={col:col.replace("/"," ").replace(" ","_")},inplace=True)
+
     for index, row in df.iterrows():
-        data.append(row)
+        currRow = row.to_dict()
+        data.append(currRow)
 
 
 def changeExtension(item):
@@ -39,11 +43,13 @@ def loadData():
         if file != ".DS_Store.xlsx":
             loadWorkbook(file,data)
         fileNo += 1
+    os.chdir("..")
     return data
 
 def processAndLoadData():
     processFiles()
     data = loadData()
+    # print(data[0])
     return data
 
 if __name__ == "__main__":
