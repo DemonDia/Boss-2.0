@@ -1,34 +1,54 @@
 import os
 import openpyxl
-
+import pandas as pd
 folder = "./testdata"
-data = []
-def loadWorkbook (excelSheetName):
-    print("excelSheetName",excelSheetName)
-    book = openpyxl.load_workbook(excelSheetName,read_only=True)
-    # sheet = book.active
-    # print(sheet)
+extension = "xlsx"
+
+def loadWorkbook(excelSheetName,data):
+    df = pd.read_excel(excelSheetName)
+    for col in df.columns:
+        df.rename(columns={col:col.replace("/"," ").replace(" ","_")},inplace=True)
+    for index, row in df.iterrows():
+        data.append(row)
+
 
 def changeExtension(item):
     root, xtension = os.path.splitext(item.path)
-    if xtension == ".xls":
-        xtension = ".xlsx"
-        newPath = root+xtension
+    if xtension != extension:
+        xtension = extension
+        newPath = root+"."+xtension
         os.rename(item.path, newPath)
         print("Changed")
     else:
         print("No need to change")
 
-if __name__ == "__main__":
+def processFiles():
     with os.scandir(folder) as fileOrFolder:
         for item in fileOrFolder:
             if item.is_file():
                 changeExtension(item)
-    
     os.chdir(folder)
-    for file in os.listdir():
-        print(file)
-    loadWorkbook("2019-20_T1.xlsx")
+
+
+def loadData():    
+    data = []
+    files = os.listdir()
+    fileNo = 1
+    for file in files:
+        print("Processing ",fileNo,"/",len(files))
+        if file != ".DS_Store.xlsx":
+            loadWorkbook(file,data)
+        fileNo += 1
+    return data
+
+def processAndLoadData():
+    processFiles()
+    data = loadData()
+    return data
+
+if __name__ == "__main__":
+    data = processAndLoadData()
+    print(len(data))
 
     
 
