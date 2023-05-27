@@ -9,6 +9,8 @@ data = processAndLoadData()
 def home():
     return "Server is alive"
 
+# ==================== Basic routes ====================
+# get all the mods
 @app.route("/mods")
 def getData():
     return jsonify(data), 200
@@ -73,10 +75,56 @@ def getModsByRound(round,window):
             "Something went wrong", 500 
         })
     
+# by mod name
 @app.route("/mods/name/<name>")
 def getModsByName(name):
     try:
         res = [row for row in data if name in row.get("Description").lower()]
+        return jsonify({
+            "data":res,
+            "status":200
+        })
+    
+    except:
+        return jsonify({
+            "Something went wrong", 500 
+        })
+
+# by faculty
+@app.route("/mods/school/<school>")
+def getModsBySchool(school):
+    try:
+        res = [row for row in data if school in row.get("School_Department").lower()]
+        return jsonify({
+            "data":res,
+            "status":200
+        })
+    
+    except:
+        return jsonify({
+            "Something went wrong", 500 
+        })
+
+# by course code
+@app.route("/mods/code/<code>")
+def getModsByCode(code):
+    try:
+        res = [row for row in data if code in row.get("Course_Code").lower()]
+        return jsonify({
+            "data":res,
+            "status":200
+        })
+    
+    except:
+        return jsonify({
+            "Something went wrong", 500 
+        })
+    
+# by prof name
+@app.route("/mods/prof/<prof>")
+def getModsByProf(prof):
+    try:
+        res = [row for row in data if prof in row.get("Instructor").lower()]
         return jsonify({
             "data":res,
             "status":200
