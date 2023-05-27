@@ -1,9 +1,15 @@
 from flask import Flask, request, jsonify
 from seeding import processAndLoadData
+from operator import itemgetter
 
 
 app = Flask(__name__)
-data = processAndLoadData()
+data = []
+
+rounds = ["1","1A","1B","2","2A"]
+windows = ["1","2","3","4","5"]
+years = ["2019-20","2020-21","2021-22","2022-23"]
+terms = ["1","2","3A","3B"]
 
 @app.route("/")
 def home():
@@ -20,8 +26,6 @@ def getData():
 @app.route("/mods/term/<term>/<year>")
 def getModsByTerm(term,year):
     # print("term",term)
-    years = ["2019-20","2020-21","2021-22","2022-23"]
-    terms = ["1","2","3A","3B"]
     try:
 
         if term not in terms:
@@ -35,12 +39,11 @@ def getModsByTerm(term,year):
                 "status":400
             })
         currTerm = year+" Term "+term
-        res = [row for row in data if row.get("Term") == currTerm]
-        print(len(res))
-        return jsonify({
-            "data":res,
-            "status":200
-        })
+        res = []
+        for row in data:
+            if row.get("Term") == currTerm and row.get("Description") not in res:
+                res.append(row.get("Description"))
+        return jsonify(res)
     
     except:
         return jsonify({
@@ -50,8 +53,6 @@ def getModsByTerm(term,year):
 #get the mods in given round
 @app.route("/mods/round/<round>/<window>")
 def getModsByRound(round,window):
-    rounds = ["1","1A","1B","2","2A"]
-    windows = ["1","2","3","4","5"]
     try:
         if round not in rounds:
             return jsonify({
@@ -65,10 +66,7 @@ def getModsByRound(round,window):
             })
         currRound = "Round "+round+" Window "+window
         res = [row for row in data if row.get("Bidding_Window") == currRound]
-        return jsonify({
-            "data":res,
-            "status":200
-        })
+        return jsonify(res)
     
     except:
         return jsonify({
@@ -80,10 +78,7 @@ def getModsByRound(round,window):
 def getModsByName(name):
     try:
         res = [row for row in data if name in row.get("Description").lower()]
-        return jsonify({
-            "data":res,
-            "status":200
-        })
+        return jsonify(res)
     
     except:
         return jsonify({
@@ -95,10 +90,7 @@ def getModsByName(name):
 def getModsBySchool(school):
     try:
         res = [row for row in data if school in row.get("School_Department").lower()]
-        return jsonify({
-            "data":res,
-            "status":200
-        })
+        return jsonify(res)
     
     except:
         return jsonify({
@@ -110,10 +102,7 @@ def getModsBySchool(school):
 def getModsByCode(code):
     try:
         res = [row for row in data if code in row.get("Course_Code").lower()]
-        return jsonify({
-            "data":res,
-            "status":200
-        })
+        return jsonify(res)
     
     except:
         return jsonify({
@@ -125,15 +114,30 @@ def getModsByCode(code):
 def getModsByProf(prof):
     try:
         res = [row for row in data if prof in row.get("Instructor").lower()]
-        return jsonify({
-            "data":res,
-            "status":200
-        })
+        return jsonify(res)
     
     except:
         return jsonify({
             "Something went wrong", 500 
         })
 
+# by mod name, window and term
+@app.route("/mods/select")
+def selectedMod():
+    requestJson = request.get_json()
+    print("requestJson",requestJson)
+    term, year,name,round,window = itemgetter("term","year","name","round","window")(requestJson)
+    try:
+        currTerm = year+" Term "+term
+        currRound = "Round "+round+" Window "+window
+
+        res = [row for row in data if row.get("Bidding_Window") == currRound and row.get("Term") == currTerm and name in row.get("Description").lower()]
+        return jsonify(res)
+    except:
+        return jsonify({
+            "Something went wrong", 500 
+        })
+
 if __name__ == "__main__":
+    data = processAndLoadData()
     app.run(debug=True)
