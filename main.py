@@ -25,7 +25,6 @@ def getData():
 # get the mods in given term
 @app.route("/mods/term/<term>/<year>")
 def getModsByTerm(term,year):
-    # print("term",term)
     try:
 
         if term not in terms:
