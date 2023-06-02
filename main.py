@@ -37,12 +37,18 @@ def getModsByTerm(term,year):
                 "message":"Invalid year",
                 "status":400
             })
+        
         currTerm = year+" Term "+term
         res = []
+        # data = modsCollection.find({"Term":currTerm}).sort("Description")
+        data = modsCollection.find()
+        # .sort("Description")
         for row in data:
-            if row.get("Term") == currTerm and row.get("Description") not in res:
+            if row["Description"] not in res and row["Term"] == currTerm:
                 res.append(row.get("Description"))
         return jsonify(res)
+
+        # return jsonify({"msg":"idkbro"})
     
     except:
         return jsonify({
