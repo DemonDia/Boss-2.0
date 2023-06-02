@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from seeding import processAndLoadData
 from operator import itemgetter
-
+from setup import modsCollection
 
 app = Flask(__name__)
 data = []
@@ -138,5 +138,5 @@ def selectedMod():
         })
 
 if __name__ == "__main__":
-    data = processAndLoadData()
+    # data = processAndLoadData()
     app.run(debug=True)

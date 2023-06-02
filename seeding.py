@@ -1,8 +1,13 @@
 import os
 import openpyxl
 import pandas as pd
+from setup import modsCollection
+
 folder = "./testdata"
 extension = "xlsx"
+
+
+import pymongo  
 
 def loadWorkbook(excelSheetName,data):
     df = pd.read_excel(excelSheetName)
@@ -52,12 +57,11 @@ def loadData():
 def processAndLoadData():
     processFiles()
     data = loadData()
-    # print(data[0])
     return data
 
 if __name__ == "__main__":
     data = processAndLoadData()
-    print(len(data))
+    modsCollection.insert_many(data)
 
     
 
