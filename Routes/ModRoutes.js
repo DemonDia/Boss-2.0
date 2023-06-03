@@ -9,7 +9,7 @@ const modController = require("../Controllers/ModController");
 // get mod names for each term
 router.get("/name/t/:term/y/:year", modController.getModNamesTerm);
 
-// get mod codes for each teerm
+// get mod codes for each term
 router.get("/code/t/:term/y/:year", modController.getModsCodesTerm);
 
 // get prof names for each term 
