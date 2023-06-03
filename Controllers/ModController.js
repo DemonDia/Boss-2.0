@@ -59,7 +59,7 @@ const getModsCodesTerm = async (req, res) => {
 
 const getAverageMedianMod = async (req, res) => {
     const { term, year, round, window, code, prof } = req.params;
-    console.log({ term, year, round, window, code, prof } );
+    console.log({ term, year, round, window, code, prof });
     try {
         console.log(`Round ${round} Window ${window}`);
         const selectedMods = await Mod.find(
@@ -68,7 +68,7 @@ const getAverageMedianMod = async (req, res) => {
                 Bidding_Window: `Round ${round} Window ${window}`,
                 Instructor: prof,
             },
-            { Median_Bid: 1 }
+            { Median_Bid: 1, Term: 1 }
         );
         if (selectedMods.length === 0) {
             return res.status(404).json({
@@ -77,7 +77,8 @@ const getAverageMedianMod = async (req, res) => {
         }
         let medians = [];
         selectedMods.forEach((mod) => {
-            medians.push(mod.Median_Bid);
+            const { Median_Bid, Term } = mod;
+            medians.push({ Median_Bid, Term });
         });
         return res.json({
             data: medians,
