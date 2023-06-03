@@ -3,6 +3,7 @@ const Mod = require("../Models/ModModel");
 // =========================Helper functions=========================
 
 // =========================Read=========================
+// get prof names for each term 
 const getProfNamesTerm = async (req, res) => {
     const { year, term } = req.params;
     try {
@@ -19,6 +20,7 @@ const getProfNamesTerm = async (req, res) => {
     }
 };
 
+// get mod names for each term
 const getModNamesTerm = async (req, res) => {
     // const start = Date.now();
     const { year, term } = req.params;
@@ -36,6 +38,7 @@ const getModNamesTerm = async (req, res) => {
     }
 };
 
+// get mod codes for each teerm
 const getModsCodesTerm = async (req, res) => {
     const { year, term } = req.params;
     try {
@@ -57,6 +60,7 @@ const getModsCodesTerm = async (req, res) => {
     }
 };
 
+// get average median for each mod for given prof
 const getAverageMedianMod = async (req, res) => {
     const { round, window, code, prof } = req.params;
     try {
@@ -88,6 +92,7 @@ const getAverageMedianMod = async (req, res) => {
     }
 };
 
+// get average median for each mod based on prof
 const getAverageMedianProfMod = async (req, res) => {
     const { round, window, code } = req.params;
     console.log(round);
@@ -106,18 +111,20 @@ const getAverageMedianProfMod = async (req, res) => {
             });
         }
         let medians = [];
-        let data = {};
+        let data = {}
         selectedMods.forEach((mod) => {
             const { Median_Bid, Term, Instructor } = mod;
             medians.push({ Median_Bid, Term, Instructor });
             if (Instructor in data) {
-                data[Instructor].push({ Median_Bid, Term });
-            } else {
-                data[Instructor] = [{ Median_Bid, Term }];
+                data[Instructor].push({ Median_Bid, Term })
             }
+            else{
+                data[Instructor] = [{ Median_Bid, Term }]
+            }
+
         });
         return res.json({
-            data,
+            data
         });
     } catch (e) {
         console.log(e);
