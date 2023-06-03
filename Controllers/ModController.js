@@ -58,8 +58,7 @@ const getModsCodesTerm = async (req, res) => {
 };
 
 const getAverageMedianMod = async (req, res) => {
-    const { term, year, round, window, code, prof } = req.params;
-    console.log({ term, year, round, window, code, prof });
+    const { round, window, code, prof } = req.params;
     try {
         console.log(`Round ${round} Window ${window}`);
         const selectedMods = await Mod.find(
@@ -89,9 +88,47 @@ const getAverageMedianMod = async (req, res) => {
     }
 };
 
+const getAverageMedianProfMod = async (req, res) => {
+    const { round, window, code } = req.params;
+    console.log(round);
+    try {
+        console.log(`Round ${round} Window ${window}`);
+        const selectedMods = await Mod.find(
+            {
+                Course_Code: code,
+                Bidding_Window: `Round ${round} Window ${window}`,
+            },
+            { Median_Bid: 1, Term: 1, Instructor: 1 }
+        );
+        if (selectedMods.length === 0) {
+            return res.status(404).json({
+                message: "No records found",
+            });
+        }
+        let medians = [];
+        let data = {};
+        selectedMods.forEach((mod) => {
+            const { Median_Bid, Term, Instructor } = mod;
+            medians.push({ Median_Bid, Term, Instructor });
+            if (Instructor in data) {
+                data[Instructor].push({ Median_Bid, Term });
+            } else {
+                data[Instructor] = [{ Median_Bid, Term }];
+            }
+        });
+        return res.json({
+            data,
+        });
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json({ message: "Something went wrong" });
+    }
+};
+
 module.exports = {
     getProfNamesTerm,
     getModNamesTerm,
     getModsCodesTerm,
     getAverageMedianMod,
+    getAverageMedianProfMod,
 };

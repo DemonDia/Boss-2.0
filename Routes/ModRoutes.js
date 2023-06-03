@@ -9,7 +9,7 @@ const modController = require("../Controllers/ModController");
 router.get("/name/t/:term/y/:year", modController.getModNamesTerm);
 router.get("/code/t/:term/y/:year", modController.getModsCodesTerm);
 router.get("/prof/t/:term/y/:year", modController.getProfNamesTerm);
-router.get("/median/:term/:year/:round/:window/:code/:prof", modController.getAverageMedianMod);
-
+router.get("/median/:round/:window/:code/:prof", modController.getAverageMedianMod);
+router.get("/median/mod/prof/:round/:window/:code", modController.getAverageMedianProfMod);
 // ===========================export routes===========================
 module.exports = router;
