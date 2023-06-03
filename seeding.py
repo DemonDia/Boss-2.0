@@ -17,7 +17,7 @@ def loadWorkbook(excelSheetName,data):
 
 
     for col in df.columns:
-        df.rename(columns={col:col.replace("/"," ").replace(" ","_")},inplace=True)
+        df.rename(columns={col:col.replace("/"," ").replace(" ","_").replace(".","")},inplace=True)
 
     for index, row in df.iterrows():
         currRow = row.to_dict()
