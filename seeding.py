@@ -21,6 +21,7 @@ def loadWorkbook(excelSheetName,data):
 
     for index, row in df.iterrows():
         currRow = row.to_dict()
+        currRow["Instructor"] = currRow["Instructor"].replace(" ","")
         data.append(currRow)
 
 
