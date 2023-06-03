@@ -21,6 +21,7 @@ def loadWorkbook(excelSheetName,data):
 
     for index, row in df.iterrows():
         currRow = row.to_dict()
+        currRow["Instructor"] = currRow["Instructor"].lstrip().title()
         data.append(currRow)
 
 
@@ -30,9 +31,7 @@ def changeExtension(item):
         xtension = extension
         newPath = root+"."+xtension
         os.rename(item.path, newPath)
-        print("Changed")
-    else:
-        print("No need to change")
+
 
 def processFiles():
     with os.scandir(folder) as fileOrFolder:
@@ -61,7 +60,9 @@ def processAndLoadData():
 
 if __name__ == "__main__":
     data = processAndLoadData()
+    print("Loading data")
     modsCollection.insert_many(data)
+    print("Loaded")
 
     
 
