@@ -12,7 +12,7 @@ modsCollection = testDb.mods
 
 
 def insertTest():
-    # collection = testDb.test
+    collection = testDb.test
     testDoc = {"name":"tim",
                "type":"test"}
     insertedId = modsCollection.insert_one(testDoc).inserted_id
