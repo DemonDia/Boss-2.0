@@ -3,7 +3,25 @@ const Mod = require("../Models/ModModel");
 // =========================Helper functions=========================
 
 // =========================Read=========================
-// get prof names for each term 
+
+// get everything
+const getAllMods = async (req, res) => {
+    try{
+        console.log("LOADING....")
+        data = await Mod.find();
+        console.log("Loaded")
+        return res.json({
+            data,
+        });
+    }
+    catch(e){
+        console.log(e)
+        return res.status(500).json({ message: "Something went wrong" });
+    }
+
+};
+
+// get prof names for each term
 const getProfNamesTerm = async (req, res) => {
     const { year, term } = req.params;
     try {
@@ -111,20 +129,18 @@ const getAverageMedianProfMod = async (req, res) => {
             });
         }
         let medians = [];
-        let data = {}
+        let data = {};
         selectedMods.forEach((mod) => {
             const { Median_Bid, Term, Instructor } = mod;
             medians.push({ Median_Bid, Term, Instructor });
             if (Instructor in data) {
-                data[Instructor].push({ Median_Bid, Term })
+                data[Instructor].push({ Median_Bid, Term });
+            } else {
+                data[Instructor] = [{ Median_Bid, Term }];
             }
-            else{
-                data[Instructor] = [{ Median_Bid, Term }]
-            }
-
         });
         return res.json({
-            data
+            data,
         });
     } catch (e) {
         console.log(e);
@@ -133,6 +149,7 @@ const getAverageMedianProfMod = async (req, res) => {
 };
 
 module.exports = {
+    getAllMods,
     getProfNamesTerm,
     getModNamesTerm,
     getModsCodesTerm,
